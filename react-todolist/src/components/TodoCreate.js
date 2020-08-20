@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { MdAdd } from "react-icons/md";
-import { useTodoNextId } from "../TodoContext";
+import { useTodoNextId, useTodoDispatch } from "../TodoContext";
 
 const CircleButton = styled.button`
   background: #38d9a9;
@@ -56,7 +56,9 @@ const InsertFormPositioner = styled.div`
   left: 0;
   position: absolute;
 `;
-const InsertForm = styled.div`
+
+//styled.form으로 설정하면 onSubmit 이벤트가 발생한다.
+const InsertForm = styled.form`
   background: #f8f9fa;
   padding: 32px;
   padding-bottom: 72px;
@@ -79,18 +81,40 @@ const Input = styled.input`
 
 function TodoCreate() {
   const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("");
+  const dispatch = useTodoDispatch();
+  const nextId = useTodoNextId();
+
   const onToggle = () => setOpen(!open);
-
-  //const nextId = useTodoNextId();
-
-  //nextId.current += 1;
+  const onChange = (e) => setValue(e.target.value);
+  // onSubmit 이벤트가 발생하면 input에 입력 후 엔터를 치면 페이지 새로고침이 일어난다.
+  // 아래의 e.preventDefault를 사용하면 이를 방지할 수 있다.
+  const onSubmit = (e) => {
+    e.preventDefault();
+    dispatch({
+      type: "CREATE",
+      todo: {
+        id: nextId.current,
+        text: value,
+        done: false,
+      },
+    });
+    setValue("");
+    setOpen(false);
+    nextId.current += 1;
+  };
 
   return (
     <>
       {open && (
         <InsertFormPositioner>
-          <InsertForm>
-            <Input placeholder="할 일을 입력 후, Enter를 누르세요." autoFocus/>
+          <InsertForm onSubmit={onSubmit}>
+            <Input
+              placeholder="할 일을 입력 후, Enter를 누르세요."
+              autoFocus
+              onChange={onChange}
+              value={value}
+            />
           </InsertForm>
         </InsertFormPositioner>
       )}
@@ -101,4 +125,4 @@ function TodoCreate() {
   );
 }
 
-export default TodoCreate;
+export default React.memo(TodoCreate);
