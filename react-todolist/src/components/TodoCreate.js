@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { MdAdd } from "react-icons/md";
-import { useTodoNextId, useTodoDispatch } from "../TodoContext";
+import { useTodoNextId, useTodoDispatch } from "../context/TodoContext";
 
 const CircleButton = styled.button`
   background: #38d9a9;
@@ -85,7 +85,9 @@ function TodoCreate() {
   const dispatch = useTodoDispatch();
   const nextId = useTodoNextId();
 
-  const onToggle = () => setOpen(!open);
+  const onToggle = () => {
+    setOpen(!open);
+  };
   const onChange = (e) => setValue(e.target.value);
   // onSubmit 이벤트가 발생하면 input에 입력 후 엔터를 치면 페이지 새로고침이 일어난다.
   // 아래의 e.preventDefault를 사용하면 이를 방지할 수 있다.

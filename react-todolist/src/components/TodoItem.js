@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { MdDone, MdDelete } from "react-icons/md";
-import { useTodoDispatch } from "../TodoContext";
+import { useTodoDispatch } from "../context/TodoContext";
 
 const Remove = styled.div`
   opacity: 0;
@@ -17,8 +17,8 @@ const Remove = styled.div`
 `;
 
 const CheckCircle = styled.div`
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 16px;
   border: 1px solid #ced4da;
   font-size: 24px;

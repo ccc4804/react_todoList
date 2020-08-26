@@ -1,4 +1,11 @@
-import React, { useReducer, createContext, useContext, useRef } from "react";
+import React, {
+  useReducer,
+  createContext,
+  useContext,
+  useRef,
+} from "react";
+import { useAsync } from "react-async";
+
 
 const initialTodos = [
   { id: 1, text: "프로젝트 생성하기1", done: true },
@@ -7,12 +14,19 @@ const initialTodos = [
   { id: 4, text: "프로젝트 생성하기4", done: false },
 ];
 
+const initialState = {
+  users: initialAsyncState,
+  user: initialAsyncState,
+};
+
 /**
  * CREATE
  * TOGGLE
  * REMOVE
  */
 function todoReducer(state, action) {
+  console.log("action");
+  console.log(state);
   switch (action.type) {
     case "CREATE":
       return state.concat(action.todo);
@@ -22,6 +36,11 @@ function todoReducer(state, action) {
       );
     case "REMOVE":
       return state.filter((todo) => todo.id !== action.id);
+    case "REFRESH":
+      // const { data } = useAsync({
+      //   promiseFn: getTodo,
+      // });
+      return state;
     default:
       throw new Error(`Unhadled action type: ${action.type}`);
   }
@@ -32,8 +51,14 @@ const TodoDispatchContext = createContext();
 const TodoNextIdContext = createContext();
 
 export function TodoProvider({ children }) {
-  const [state, dispatch] = useReducer(todoReducer, initialTodos);
+  // const { data, error, isLoading, reload } = useAsync({
+  //   promiseFn: getTodo,
+  // });
+
   const nextId = useRef(5);
+  const [state, dispatch] = useReducer(todoReducer, initialTodos);
+  console.log("state");
+  console.log(state);
 
   return (
     <TodoStateContext.Provider value={state}>
@@ -49,24 +74,24 @@ export function TodoProvider({ children }) {
 /**custom hook 생성*/
 export function useTodoState() {
   const context = useContext(TodoStateContext);
-  if (!context){
-    throw new Error('Cannot find TodoProvider')
+  if (!context) {
+    throw new Error("Cannot find TodoProvider");
   }
   return context;
 }
 
 export function useTodoDispatch() {
   const context = useContext(TodoDispatchContext);
-  if (!context){
-    throw new Error('Cannot find TodoProvider')
+  if (!context) {
+    throw new Error("Cannot find TodoProvider");
   }
   return context;
 }
 
-export function useTodoNextId(){
+export function useTodoNextId() {
   const context = useContext(TodoNextIdContext);
-  if (!context){
-    throw new Error('Cannot find TodoProvider')
+  if (!context) {
+    throw new Error("Cannot find TodoProvider");
   }
   return context;
 }
